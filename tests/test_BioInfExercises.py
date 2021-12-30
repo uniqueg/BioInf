@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from _pytest.capture import capsys
+
 from src.BioInfExercises import parse_fasta, discard_ambiguous_seqs, nucleotide_frequencies, map_reads, \
     convert_sam_fasta
 
@@ -7,7 +10,9 @@ def test_parse_fasta():
     """ test for funtion parse_fasta()
     tests if it returns right headers
     """
-    arr = parse_fasta(r"C:\Users\fabri\PycharmProjects\BioInf\tests\test_input\genome.fasta")
+    arr = parse_fasta(
+        str(Path(__file__).parents[0] / "test_input/genome.fasta")
+    )
     assert arr[0][0] == '>chr1'
     assert arr[0][1] == '>chr2'
     assert arr[0][2] == '>chr3'
@@ -39,8 +44,8 @@ def test_map_reads():
     tests if function returns correct index of the position of the substring
     """
 
-    file_one = r"C:\Users\fabri\PycharmProjects\BioInf\tests\test_input\sequences.fasta"
-    file_two = r"C:\Users\fabri\PycharmProjects\BioInf\tests\test_input\genome.fasta"
+    file_one = str(Path(__file__).parents[0] / "test_input/sequences.fasta")
+    file_two = str(Path(__file__).parents[0] / "test_input/genome.fasta")
     dic = map_reads(file_one,file_two)
     assert dic['>sequence1']['>chr1'] == 758
     assert dic['>sequence2']['>chr2'] == 1421
@@ -51,17 +56,13 @@ def test_convert_sam_fasta():
     """ test for funtion sam_to_fasta_file()
     tests samples if the new created fasta file has correct format
     """
-    convert_sam_fasta(r"C:\Users\fabri\PycharmProjects\BioInf\tests\test_input\Aligned.out.sam")
-    with open(r"C:\Users\fabri\PycharmProjects\BioInf\tests\test_input\Aligned.out.fasta") as fh:
+    convert_sam_fasta(
+        str(Path(__file__).parents[0] / "test_input/Aligned.out.sam"),
+    )
+    with open(
+        str(Path(__file__).parents[0] / "test_input/Aligned.out.fasta"),
+    ) as fh:
         data = fh.readlines()
     assert data[0][0] == '>'
     assert data[12][1:10] == 'alignment'
     assert data[13][0:4] == 'TGTG'
-
-
-if __name__ == '__main__':
-    test_parse_fasta()
-    test_discard_ambiguous_seqs()
-    test_nucleotide_frequencies(capsys)
-    test_map_reads()
-    test_convert_sam_fasta()

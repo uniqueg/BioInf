@@ -1,3 +1,4 @@
 #!/bin/bash
-python main.py
-python test_BioInfExercises.py
+python src/main.py
+flake8 src/
+coverage run --source src/ -m pytest && coverage report -m
